@@ -2,6 +2,10 @@
 
 An AI-powered resume improvement web-app that leverages OpenAIs API to transform resumes into a more professional and impactful version
 
+## Project Walkthrough
+
+Watch a quick walkthrough/example of the project here: [YouTube Link](https://www.youtube.com/watch?v=-k0QUe4KAyY)
+
 ## Overview
 
 The AI Resume Builder allows users to upload a PDF resume, extracts its text using pdfJS-dist, interacts with OpenAI's API to enhance the extracted text content, and puts the outputted resume back together using PDFKit. 
@@ -35,6 +39,6 @@ The AI Resume Builder allows users to upload a PDF resume, extracts its text usi
 - place your OpenAI API key in the .env file, label it "OPENAI_API_KEY"
 
 4. **Run the server**
-- run the server with node server.mjs
+- run the server with "node server.mjs"
 - navigate to http://localhost:3000.
 
