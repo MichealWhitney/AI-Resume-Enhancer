@@ -3,8 +3,9 @@
 An AI-powered resume improvement web-app that leverages OpenAIs API to transform resumes into a more professional and impactful version
 
 ## Project Walkthrough
+- I created a quick example/walkthrough of the project, you can view it by clicking on the thumbnail below
+[![Watch the video](https://img.youtube.com/vi/-k0QUe4KAyY/maxresdefault.jpg)](https://www.youtube.com/watch?v=-k0QUe4KAyY)
 
-Watch a quick walkthrough/example of the project here: [YouTube Link](https://www.youtube.com/watch?v=-k0QUe4KAyY)
 
 ## Overview
 
