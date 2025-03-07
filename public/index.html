@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AI Resume Enhancer</title>
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f5f5f5;
+      color: #333;
+    }
+    header {
+      background: #007BFF;
+      padding: 20px 0;
+      text-align: center;
+      color: #fff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    header h1 {
+      margin: 0;
+      font-size: 2.5rem;
+    }
+    #controls {
+      text-align: center;
+      margin: 20px 0;
+    }
+    input[type="file"] {
+      display: none;
+    }
+    .custom-file-upload {
+      display: inline-block;
+      padding: 10px 20px;
+      cursor: pointer;
+      border-radius: 5px;
+      font-size: 16px;
+      background: #007BFF;
+      color: #fff;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      transition: background 0.3s, transform 0.3s;
+      margin-right: 10px;
+    }
+    .custom-file-upload:hover {
+      background: #0056b3;
+      transform: translateY(-2px);
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      margin: 5px;
+      border: none;
+      border-radius: 5px;
+      background: #007BFF;
+      color: #fff;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      transition: background 0.3s, transform 0.3s;
+    }
+    button:hover {
+      background: #0056b3;
+      transform: translateY(-2px);
+    }
+    #container {
+      display: flex;
+      max-width: 1500px;
+      margin: 0 auto;
+      gap: 20px;
+      padding: 0 20px;
+    }
+    .column {
+      flex: 1 1 0;
+      background: #fff;
+      border-radius: 8px;
+      padding: 5px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    .column h2 {
+      margin-bottom: 10px;
+    }
+    #originalPreview,
+    #improvedPreview {
+      width: 100%;
+      min-height: 675px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      border-radius: 4px;
+    }
+    .loader-container {
+      text-align: center;
+    }
+    .loader {
+      display: block;
+      margin: 0 auto;
+      border: 8px solid #f3f3f3;
+      border-top: 8px solid #007BFF;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 1s linear infinite;
+    }
+    .loader-text {
+      margin-top: 10px;
+      font-size: 16px;
+      color: #007BFF;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    #downloadSection {
+      text-align: center;
+      margin: 20px auto;
+    }
+    @media (max-width: 768px) {
+      #container {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>AI Resume Enhancer</h1>
+  </header>
+  <div id="controls">
+    <label class="custom-file-upload">
+      <input type="file" id="resumeFile" name="resume" accept="application/pdf">
+      Select Resume
+    </label>
+    <button id="improveBtn" disabled>Improve Resume</button>
+  </div>
+  <div id="container">
+    <div class="column" id="originalColumn">
+      <h2>Original Resume</h2>
+      <div id="originalPreview">Press "Select Resume" to upload a resume</div>
+    </div>
+    <div class="column" id="improvedColumn">
+      <h2>AI Enhanced Resume</h2>
+      <div id="improvedPreview">Press "Improve Resume" after you have uploaded a resume</div>
+    </div>
+  </div>
+  <!-- this download secctions appears once resume is generated -->
+  <div id="downloadSection"></div>
+
+
+    <!-- SCRIPT LOGIC -->
+    <!-- SCRIPT LOGIC -->
+    <!-- SCRIPT LOGIC -->
+  <script>
+    const fileInput = document.getElementById('resumeFile');
+    const improveBtn = document.getElementById('improveBtn');
+    const originalPreview = document.getElementById('originalPreview');
+    const improvedPreview = document.getElementById('improvedPreview');
+    const downloadSection = document.getElementById('downloadSection');
+    let uploadedFile;
+
+    // when file is selected, automatically display the original resume on the left
+    fileInput.addEventListener('change', function() {
+      if (fileInput.files.length > 0) {
+        uploadedFile = fileInput.files[0];
+        const fileURL = URL.createObjectURL(uploadedFile);
+        originalPreview.innerHTML = `<iframe src="${fileURL}"></iframe>`;
+        improveBtn.disabled = false;
+        // clear any previous download button
+        downloadSection.innerHTML = '';
+      } else {
+        originalPreview.innerHTML = 'No resume uploaded.';
+        improveBtn.disabled = true;
+      }
+    });
+
+    // when "Improve Resume" is clicked, show loader with message and then submit the file to API
+    improveBtn.addEventListener('click', async function() {
+      if (!uploadedFile) {
+        alert('No resume uploaded.');
+        return;
+      }
+      improveBtn.disabled = true;
+      improvedPreview.innerHTML = `
+        <div class="loader-container">
+          <div class="loader"></div>
+          <p class="loader-text">Improving your resume...</p>
+        </div>
+      `;
+
+      const formData = new FormData();
+      formData.append('resume', uploadedFile);
+
+      try {
+        const response = await fetch('/api/improve-resume', {
+          method: 'POST',
+          body: formData
+        });
+        const data = await response.json();
+        if (data.error) {
+          improvedPreview.textContent = 'Error: ' + data.error;
+        } else if (data.downloadUrl) {
+          improvedPreview.innerHTML = `<iframe src="${data.downloadUrl}"></iframe>`;
+          // add download button below the iframe
+          downloadSection.innerHTML = `
+            <a href="${data.downloadUrl}" download>
+              <button id="downloadBtn">Download Improved PDF</button>
+            </a>
+          `;
+        } else {
+          improvedPreview.textContent = 'Unexpected response.';
+        }
+      } catch (err) {
+        improvedPreview.textContent = 'Error: ' + err.message;
+      } finally {
+        improveBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
